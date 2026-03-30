@@ -1,0 +1,66 @@
+site_name: Scene Notes Documentation
+site_description: Drop contextual notes into your Unity scene during playtesting
+site_author: Chris Burns
+site_url: https://chrisburns.github.io/scene-notes/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: amber
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: amber
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Configuration: configuration.md
+  - Placement modes: spawn-modes.md
+  - Note types: note-types.md
+  - Scene Notes Manager: editor-window.md
+  - Standalone builds: build-workflow.md
+  - Exporting notes: exporting.md
+  - FAQ and troubleshooting: faq.md
+  - Changelog: changelog.md
+
+plugins:
+  - search
+  - mkdocs-to-pdf:
+      author: Chris Burns
+      copyright: Copyright Chris Burns
+      cover: true
+      cover_title: Scene Notes
+      cover_subtitle: User Guide
+      output_path: pdf/SceneNotes_UserGuide.pdf
+      toc_title: Table of Contents
+      enabled_if_env: ENABLE_PDF
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/DSUd2QcyHZ
