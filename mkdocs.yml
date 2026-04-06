@@ -1,7 +1,7 @@
 site_name: Scene Notes Documentation
 site_description: Drop contextual notes into your Unity scene during playtesting
 site_author: Chris Burns
-site_url: https://chrisburns.github.io/scene-notes/
+site_url: https://ludichris000.github.io/Scene-Notes/
 
 theme:
   name: material
