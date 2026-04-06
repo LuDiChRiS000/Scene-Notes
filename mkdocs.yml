@@ -39,15 +39,7 @@ nav:
 
 plugins:
   - search
-  - mkdocs-to-pdf:
-      author: Chris Burns
-      copyright: Copyright Chris Burns
-      cover: true
-      cover_title: Scene Notes
-      cover_subtitle: User Guide
-      output_path: pdf/SceneNotes_UserGuide.pdf
-      toc_title: Table of Contents
-      enabled_if_env: ENABLE_PDF
+  - glightbox
 
 markdown_extensions:
   - admonition
@@ -59,6 +51,9 @@ markdown_extensions:
   - md_in_html
   - toc:
       permalink: true
+
+extra_css:
+  - stylesheets/extra.css
 
 extra:
   social:

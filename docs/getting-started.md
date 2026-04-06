@@ -1,77 +1,131 @@
 # Getting started
 
-This guide walks you through importing Scene Notes into your project and creating your first note.
+This guide walks you through setting up Scene Notes and creating your first note.
 
 ## Installation
 
 1. Import the Scene Notes package from the Unity Asset Store
 2. The package installs to `Assets/SceneNotes/`
-3. No additional setup is required — the default settings work out of the box
 
-## First-time setup
+## Setup wizard
 
-After importing, you will find a settings asset at `Assets/SceneNotes/Settings/DefaultSceneNotesSettings.asset`. Select it in the Project window to view the configuration in the Inspector.
+Scene Notes includes a guided setup wizard that creates all required assets and prefabs for you. Run these steps in order from the Unity menu bar:
 
-<!-- ![Settings asset in Inspector](images/settings-inspector.png) -->
+### Step 1: Create assets
 
-The default settings are:
+Go to Tools → Scene Notes → 1. Create Assets
 
-| Setting | Default |
-|---------|---------|
-| Hotkey | F8 |
-| Spawn mode | Player Position |
-| Author name | Your system username |
-| 2D mode | Off |
-| Auto-regenerate on play mode exit | On |
+This creates:
 
-For most projects, the only thing you may need to change is the spawn mode. See [Placement modes](spawn-modes.md) for details on which mode suits your game type.
+- `Assets/SceneNotes/Settings/SceneNotesSettings.asset` — the main configuration file
+- `Assets/SceneNotes/Settings/SceneNotesDatabase.asset` — the database that stores all note data
+- Populates the default note types (Critical, Bug, Todo, Visual, Idea)
+- Links the database to the settings automatically
 
-## Setting up the player reference
+!!! info 
+    After running this step, the Settings asset is selected in the Inspector so you can review the configuration.
 
-If you are using Player Position spawn mode (the default), you need to tell Scene Notes which GameObject is your player:
+### Step 2: Create prefabs
 
-1. Select the Scene Notes Settings asset
-2. In the Placement section, find the Player Reference field
-3. Drag your player GameObject from the scene hierarchy into this field
-4. Optionally adjust the Forward Offset to control where notes spawn relative to the player
+Go to Tools → Scene Notes → 2. Create Prefabs
 
-If the player reference is not set, Scene Notes will attempt to find a GameObject tagged "Player" as a fallback.
+This creates:
+
+- `Assets/SceneNotes/Prefabs/SceneNote3D.prefab` — the 3D sticky note prefab
+- `Assets/SceneNotes/Prefabs/SceneNote2D.prefab` — the 2D sticky note prefab
+- `Assets/SceneNotes/Prefabs/SceneNotesCanvas.prefab` — the runtime UI for note creation
+- `Assets/SceneNotes/Materials/` — materials for note body and header (3D and 2D variants)
+
+All prefabs are automatically linked to the settings asset.
+
+### Step 3: Create demo scene (optional)
+
+Go to Tools → Scene Notes → 3. Create Demo Scene
+
+This creates a self-contained demo scene at `Assets/SceneNotes/Demo/SceneNotesDemo.unity` with:
+
+- A simple environment (ground plane, pillars, crates, walls)
+- A free-fly camera (WASD to move, mouse to look, Shift to sprint, Q/E for up/down)
+- The SceneNotesCanvas prefab already placed in the scene
+- Five pre-seeded demo notes (one of each type) placed at different positions
+- One note pre-marked as resolved to demonstrate the resolved state
+
+This is the fastest way to see Scene Notes in action and understand how it works.
+
+## Adding Scene Notes to your own scene
+
+1. Open your scene
+2. Drag the SceneNotesCanvas prefab from `Assets/SceneNotes/Prefabs/` into the scene hierarchy
+3. That's it — the prefab contains both the SceneNotesController and the SceneNoteCreator
+
+!!! info 
+    The controller uses `DontDestroyOnLoad` in play mode so it persists across scene changes.
+
+## Configuring the player reference
+
+If you are using Player Position spawn mode (the default), you need to tell Scene Notes where your player is:
+
+1. Select the SceneNotesSettings asset
+2. In the Placement section, drag your player GameObject into the Player Reference field
+3. Optionally adjust the Spawn Offset (default is X:0, Y:1, Z:2 — slightly above and in front of the player)
+
+If the Player Reference is left empty, Scene Notes falls back in this order:
+
+1. Looks for a GameObject tagged "Player"
+2. Falls back to Camera.main and places the note forward along the camera direction
 
 !!! tip
     For games where the player object changes between scenes, use the tag-based fallback. Tag your player GameObject as "Player" in each scene and leave the Player Reference field empty.
 
 ## Creating your first note
 
-1. Enter play mode in the Unity Editor
+1. Enter play mode
 2. Play your game normally
-3. When you spot something worth noting, press the hotkey (default F8)
+3. Press the hotkey (default F8) when you spot something worth noting
 4. The game freezes and the note creation panel appears
-5. Type a description of the issue or task
-6. Select a note type from the dropdown (Critical, Bug, Todo, Visual, or Idea)
-7. Click Confirm
+5. Type a description in the text field
+6. Click a note type button to categorise it (the header colour changes to match)
+7. Click Confirm — or press Escape to cancel
 
-The note spawns as a colour-coded sticky note at your position. The game resumes automatically.
+The note spawns as a colour-coded sticky note at your position. The game resumes automatically. Your cursor state (locked/visible) is restored to what it was before the note panel opened.
 
-<!-- ![Note creation panel](images/note-creation-panel.png) -->
+![Note creation panel](images/SceneNotes-CreateNote.png)
 
 ## Viewing notes after playtesting
 
-When you exit play mode, Scene Notes automatically regenerates all your notes as scene objects. You can see them floating in the scene at the positions where you created them.
+When you exit play mode, Scene Notes automatically regenerates all your notes as scene objects (if Auto-regenerate on Play Mode Exit is enabled in settings).
 
-To manage your notes, open the Scene Notes Manager window:
+To manage your notes, open the Scene Notes Manager:
 
-- Go to Window > Scene Notes > Scene Notes Manager
-- Or use the keyboard shortcut (configurable in settings)
+- Go to Tools → Scene Notes → Scene Notes Manager
+- Or press Ctrl+Shift+N (Windows) / Cmd+Shift+N (Mac)
 
-The manager window lists all notes in the current scene. Click any note to fly the Scene view camera to its location. See [Scene Notes Manager](editor-window.md) for full details.
+Click any note in the list to fly the Scene view camera to its location. See [Scene Notes Manager](editor-window.md) for full details.
 
-## Adding Scene Notes to a build
+## Validating your setup
 
-Scene Notes also works in standalone builds, allowing QA testers to drop notes without opening Unity. See [Standalone builds](build-workflow.md) for setup instructions.
+The SceneNotesSettings Inspector includes a validation section at the bottom that checks for common configuration issues:
+
+- Missing database reference
+- Empty note types list
+- Missing note prefabs for the active mode (2D or 3D)
+- Missing player reference when using Player Position mode
+- Invalid raycast distance values
+- Zero or negative note scale
+
+If everything is configured correctly, you will see "All settings look good."
+
+The Inspector also includes quick-action buttons:
+
+- Open Scene Notes Manager — opens the manager window
+- Regenerate All Notes — rebuilds note objects from the database
+- Join the Discord / Documentation / Leave a Rating — community links
 
 ## Next steps
 
-- [Configuration](configuration.md) — customise hotkeys, spawn modes, and visuals
+- [Configuration](configuration.md) — customise all settings
 - [Placement modes](spawn-modes.md) — choose the right mode for your game type
 - [Note types](note-types.md) — create custom note categories
-- [Exporting notes](exporting.md) — export to CSV or import from builds
+- [Scene Notes Manager](editor-window.md) — the full editor window reference
+- [Standalone builds](build-workflow.md) — set up QA workflows for builds
+- [Exporting notes](exporting.md) — CSV and JSON export

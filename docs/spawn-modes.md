@@ -24,11 +24,10 @@ The default offset of (0, 0, 2) places the note 2 units in front of the player, 
 2. Drag your player GameObject into the Player Reference field
 3. Adjust the Forward Offset if needed
 
-### Tips
-
-- For first-person games, an offset of (0, 0, 3) works well — the note appears a few metres ahead
-- For third-person games with an overhead camera, try (0, 2, 0) to place notes above the player
-- For side-scrolling 2D games, use (2, 0, 0) or (-2, 0, 0) depending on your character's facing direction
+!!! Tips    
+    - For first-person games, an offset of (0, 0, 3) works well — the note appears a few metres ahead
+    - For third-person games with an overhead camera, try (0, 2, 0) to place notes above the player
+    - For side-scrolling 2D games, use (2, 0, 0) or (-2, 0, 0) depending on your character's facing direction
 
 ### Fallback behaviour
 

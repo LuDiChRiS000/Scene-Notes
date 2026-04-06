@@ -1,109 +1,165 @@
 # Configuration
 
-All Scene Notes settings are stored in a single ScriptableObject asset. Select it in the Project window to edit the configuration in the Inspector.
+All Scene Notes settings are stored in a single ScriptableObject asset located at `Assets/SceneNotes/Settings/SceneNotesSettings.asset`. Select it in the Project window to view and edit the configuration in the Inspector.
 
-Default location: `Assets/SceneNotes/Settings/DefaultSceneNotesSettings.asset`
+![Settings Inspector](images/SceneNotes-Settings.png){ .image-card }
 
-## General settings
+## General
 
 ### Hotkey
 
-The key that triggers note creation during play mode. Default is F8. You can set this to any KeyCode value.
-
-Choose a key that does not conflict with your game's controls. If your game uses F8 for something, change this before playtesting.
+The key that triggers note creation during play mode. Default is F8 (KeyCode 289). Choose a key that does not conflict with your game's controls.
 
 ### Author name
 
-The name attached to each note you create. Defaults to your system username. Override this in the settings if you prefer a different name, or if multiple team members share a machine.
+The name attached to each note you create. If left empty, your operating system username is used automatically. For team workflows, each team member should set their own author name so notes can be attributed correctly.
 
-For team workflows, each team member should set their own author name so notes can be attributed correctly.
-
-### Database
-
-A reference to the SceneNotesDatabase ScriptableObject that stores all note data. The default database is created automatically. You can create additional databases if you need to maintain separate note sets.
-
-### Auto-regenerate on play mode exit
-
-When enabled (default), Scene Notes automatically rebuilds all note objects in the scene when you exit play mode. Disable this if you prefer to regenerate manually via the Scene Notes Manager window.
-
-## Placement settings
+## Placement
 
 ### Spawn mode
 
-Controls where notes appear when created. See [Placement modes](spawn-modes.md) for detailed guidance.
+Controls where notes appear when created. Three options:
 
-| Mode | Best for |
-|------|----------|
-| Player Position | FPS, third-person, platformers, RPGs |
-| Cursor Raycast | RTS, city builders, god games, top-down strategy |
-| Screen Centre Ray | VR, cursor-locked FPS, reticle-based games |
+| Mode | Description | Best for |
+|------|-------------|----------|
+| Player Position | Offset from the player Transform (or camera fallback) | FPS, third-person, platformers, RPGs |
+| Cursor Raycast | Raycast from the mouse cursor through the camera | RTS, city builders, god games, top-down |
+| Screen Centre Ray | Raycast from the centre of the screen | VR, cursor-locked FPS, reticle-based games |
+
+See [Placement modes](spawn-modes.md) for detailed guidance on each mode.
 
 ### Player reference
 
-The Transform of your player character. Only used in Player Position mode. If left empty, Scene Notes looks for a GameObject tagged "Player" as a fallback.
+The Transform of your player character. Only used in Player Position mode. If left empty, Scene Notes looks for a GameObject tagged "Player" first, then falls back to Camera.main.
 
-### Forward offset
+### Spawn offset
 
-A Vector3 offset applied in Player Position mode. Controls where the note spawns relative to the player. Default is (0, 0, 2) which places the note 2 units in front of the player.
+A Vector3 offset applied in Player Position mode. Controls where the note spawns relative to the player. Default is (0, 1, 2) — one unit above and two units in front of the player.
 
 - X: left/right offset
 - Y: up/down offset
 - Z: forward/backward offset
 
-Adjust this based on your camera setup. For a first-person game, (0, 0, 3) places notes a comfortable distance ahead. For a third-person game with an overhead camera, (0, 2, 0) places notes above the player.
-
 ### 2D mode
 
-Enable this for 2D projects. Changes the note prefab to a sprite-based version and uses 2D raycasting instead of 3D.
+Enable for 2D (orthographic) projects. Changes the placement to use `ScreenToWorldPoint` instead of 3D raycasting and spawns the 2D note prefab instead of the 3D one.
 
 ### Note Z depth (2D only)
 
-The Z position for notes in 2D mode. Negative values place notes in front of your game art. Adjust this so notes are visible but do not obscure important gameplay elements. Default is -1.
+The Z world position assigned to notes in 2D mode. Negative values place notes in front of your game art. Default is -1.
 
 ### Max raycast distance
 
-The maximum distance for cursor and screen centre raycasts. If the ray does not hit any collider within this distance, the fallback distance is used instead. Default is 100 units.
+Maximum distance the placement raycast travels when searching for a surface. Default is 100 units.
 
 ### Fallback ray distance
 
-When a raycast does not hit anything (for example, the cursor is pointing at the sky), the note spawns at this distance from the camera along the ray direction. Default is 20 units.
+When the raycast does not hit any surface (for example, pointing at the sky), the note spawns at this distance from the camera along the ray direction. Default is 20 units.
 
 ### Raycast layer mask
 
-Controls which layers the raycast can hit. Default is Everything. If your game has layers that should not receive notes (UI layers, trigger volumes, etc.), exclude them here.
+Controls which layers the placement raycast checks against. Default is Everything. Exclude layers that should not receive notes (UI, trigger volumes, invisible colliders).
 
-## Visual settings
+## Note types
 
-### Note prefab (3D)
+A list of categories available when creating a note. Each type has a name and a colour used for the note header strip and the Scene Notes Manager filter pills.
 
-The prefab used for 3D note objects. The default prefab is a billboard sticky note with a colour header and text display. You can replace this with your own prefab — it must have a SceneNoteObject component attached.
+Default types:
 
-### Note prefab (2D)
+| Type | Colour | Hex |
+|------|--------|-----|
+| Critical |<span style="color:#E24B4A;">Red</span> | #E24B4A |
+| Bug |<span style="color:#EF9F27;">Orange</span> | #EF9F27 |
+| Todo |<span style="color:#F5D63D;">Yellow</span> | #F5D63D |
+| Visual |<span style="color:#639922;">Green</span> | #639922 |
+| Idea |<span style="color:#378ADD;">Blue</span> | #378ADD |
 
-The prefab used for 2D note objects. Same requirements as the 3D prefab but using SpriteRenderer instead of MeshRenderer.
+!!!tip
+    You can add, remove, rename, and recolour types freely. See [Note types](note-types.md) for details.
+
+## Visuals
+
+### Note prefab 3D
+
+The prefab spawned for notes in 3D projects. Created automatically by the setup wizard. Must contain a SceneNoteObject component. You can replace this with a custom prefab if you want a different visual style.
+
+### Note prefab 2D
+
+The prefab spawned for notes in 2D projects. Same requirements as the 3D prefab. Uses a slightly smaller layout optimised for orthographic cameras.
 
 ### Note scale
 
-Global scale multiplier for note objects. Increase this if notes are too small to read in your scene. Default is 1.0.
+Uniform scale applied to every spawned note object. Default is 1. Increase for large open-world scenes where notes appear small, decrease for tight indoor environments.
 
 ### Billboard notes
 
-When enabled (default), note objects always face the camera. Disable this if you want notes to remain at a fixed rotation.
+When enabled (default), note objects rotate each frame to face the active camera. In the editor, they face the Scene view camera. In play mode, they face Camera.main. Disable if you want notes at a fixed rotation.
 
 ### Render on top
 
-When enabled (default), notes render on top of all scene geometry so they are never hidden behind walls or objects. Uses a high sorting order or ZTest Always depending on render pipeline. Disable this if you prefer notes to be occluded by geometry.
+When enabled (default), note objects are drawn on top of all geometry using ZTest Always, so they are visible through walls and objects. Uses a custom NoteUnlit shader with per-material ZTest control. Disable if you prefer notes to be occluded by geometry.
+
+Changes to this setting are detected at runtime and applied to all existing notes automatically — no need to regenerate.
 
 ### Gizmo max distance
 
-The maximum distance at which note gizmos are visible in the Scene view. Notes beyond this distance fade out. Default is 100 units. Increase for large open-world scenes, decrease to reduce visual clutter.
+Maximum distance from the Scene view camera at which note gizmos (coloured spheres and labels) are drawn. Default is 100 units. *(Feature not yet implimented)*
 
-## Export settings
+## Options
+
+### Date format
+
+Controls how dates are displayed on notes and in the Manager window. Two options:
+
+| Format | Example |
+|--------|---------|
+| DayMonthYear (default) | 4:00pm  30 Mar 2026 |
+| MonthDayYear | 4:00pm  Mar 30, 2026 |
+
+Times are converted from UTC to your local timezone automatically.
+
+### Select note in scene
+
+When enabled, clicking a note in the Scene Notes Manager window also selects its GameObject in the Scene view and Hierarchy. Useful for inspecting or manually moving individual notes. Disabled by default.
+
+### Hide Resovled Notes In Scene
+
+When enabled, hides all resolved notes in the scene view.
+
+### Auto-regenerate on play mode exit
+
+When enabled (default), Scene Notes automatically destroys runtime note objects and rebuilds them from the database as proper edit-mode prefab instances when you exit play mode. This ensures notes display correctly with all visual properties (colours, text, render settings) intact.
+
+### Animate Notes
+When enabled (default), Scene Notes will play a short bouncy animation when spawned.
+
+## Export
 
 ### CSV export path
 
-The file path for CSV exports, relative to the project root. Default is `SceneNotes_Export.csv`. See [Exporting notes](exporting.md).
+File path for CSV exports, relative to the project root. Default is `SceneNotes_Export.csv`. See [Exporting notes](exporting.md).
 
 ### Build import path
 
-The path to look for JSON files from standalone builds. Default is auto-detected from `Application.persistentDataPath`. See [Standalone builds](build-workflow.md).
+Path to look for JSON files from standalone builds. Leave empty to auto-detect from `Application.persistentDataPath`. See [Standalone builds](build-workflow.md).
+
+### Database
+
+The SceneNotesDatabase asset that stores all note data. Created and linked automatically by the setup wizard. You can create additional databases if you need separate note sets for different purposes.
+
+## Validation
+
+The bottom of the Settings Inspector displays a validation section that checks for common configuration issues and shows warnings or errors for anything that needs attention. If everything is correctly configured, it displays "All settings look good."
+
+Quick-action buttons are also available:
+
+- Open Scene Notes Manager — opens the editor window
+- Regenerate All Notes — rebuilds note objects from the database
+
+## Community links
+
+The Settings Inspector includes links at the bottom:
+
+- Join the Discord — community support channel
+- Documentation — this documentation site
+- Leave a Rating — link to the Asset Store review page

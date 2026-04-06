@@ -1,65 +1,69 @@
 # Exporting notes
 
-Scene Notes can export your notes to CSV for use in project management tools, spreadsheets, or task trackers.
+Scene Notes supports two export formats: CSV for project management tools and JSON for standalone build workflows.
 
 ## CSV export
 
 ### Exporting from the editor
 
 1. Open the Scene Notes Manager window
-2. Click the Export CSV button
-3. The CSV file is saved to the path configured in settings (default: `SceneNotes_Export.csv` in the project root)
-4. A confirmation message appears with the file path
+2. Click Export CSV in the toolbar
+3. The file is saved to the path configured in settings (default: `SceneNotes_Export.csv` next to your Assets folder)
+
+The export respects the current type filters. If you have hidden certain types in the filter bar, only visible types are included in the export. To export everything, make sure all type filters are active.
 
 ### CSV format
 
-The exported CSV contains these columns:
+The exported file uses RFC-4180 compliant CSV formatting. Fields containing commas, newlines, or double-quotes are properly escaped.
 
-| Column | Description |
-|--------|-------------|
-| Type | The note type name (Critical, Bug, Todo, etc.) |
-| Description | The full note description text |
-| Author | The name of the person who created the note |
-| Date | Creation date and time |
-| Scene | The Unity scene the note belongs to |
-| Position X | World X coordinate |
-| Position Y | World Y coordinate |
-| Position Z | World Z coordinate |
-| Resolved | True or False |
+Columns:
 
-### Example CSV output
+| Column | Description | Example |
+|--------|-------------|---------|
+| Type | Note type name | Critical |
+| Description | Full note text | Player falls through floor |
+| Author | Creator's name | Chris |
+| Date | Formatted date and time | 4:00pm  30 Mar 2026 |
+| Scene | Unity scene name | Level_01 |
+| Position X | World X coordinate | -12.400 |
+| Position Y | World Y coordinate | 0.000 |
+| Position Z | World Z coordinate | 33.700 |
+| Resolved | Yes or No | No |
 
-```
-Type,Description,Author,Date,Scene,Position X,Position Y,Position Z,Resolved
-Critical,Player falls through floor,-12.4,Chris,2026-03-29 14:14,Level_01,0.0,33.7,False
-Bug,Enemy AI stuck on doorframe,Chris,2026-03-29 14:18,Level_01,5.1,1.2,-8.3,False
-Todo,Add particle FX to waterfall,Chris,2026-03-29 14:30,Level_01,72.6,8.0,-1.4,False
-```
+The date format respects the Date Format setting (DayMonthYear or MonthDayYear) and converts UTC timestamps to your local timezone.
+
+### Export scope
+
+CSV export includes notes from the currently active scene only. To export notes across all scenes, switch to each scene and export separately.
 
 ### Using with project management tools
 
-The CSV format is compatible with most project management tools:
+The CSV is compatible with most tools:
 
-Trello — Use Trello's CSV import feature or a third-party tool like Coda to create cards from the exported file. Each note becomes a card with the description as the title and the position, scene, and author in the card description.
+- Trello — use a CSV import tool or Power-Up to create cards from rows
+- Jira — use the built-in CSV import to create issues
+- GitHub Issues — use a CSV-to-Issues script for batch creation
+- Notion — import as a database with sortable and filterable columns
+- Google Sheets / Excel — open directly for manual review and tracking
 
-Jira — Use Jira's CSV import to create issues. Map the Type column to Jira priority or issue type, and the Description column to the issue summary.
+### Configuring the export path
 
-GitHub Issues — Use a CSV-to-GitHub-Issues tool or script to batch-create issues from the export.
+The CSV Export Path field in settings accepts both relative and absolute paths. Relative paths are resolved from the project root (the folder containing your Assets folder). The default `SceneNotes_Export.csv` places the file next to your Assets folder.
 
-Notion — Import the CSV as a Notion database. Each note becomes a row with sortable and filterable properties.
+## JSON export
 
-Google Sheets / Excel — Open the CSV directly for manual review and tracking.
+JSON export is used primarily for the standalone build workflow — notes are automatically saved to JSON when a build quits. See [Standalone builds](build-workflow.md) for the full workflow.
 
-## Filtering before export
+JSON export can also be triggered manually from script:
 
-The CSV export respects the current filters in the Scene Notes Manager. If you have filtered to show only Critical notes, only those notes will be exported.
+```csharp
+SceneNotesExporter.ExportJSON(settings);
+```
 
-To export all notes, make sure all type filters are active and the resolved filter is set to show all.
+This saves a timestamped JSON file to `Application.persistentDataPath` with the format `SceneNotes_[SceneName]_[Timestamp].json`.
 
-## Export scope
+Unlike CSV export, JSON export includes all notes in the database, not just the current scene. The file uses Unity's `JsonUtility` serialisation wrapped in a `NoteListWrapper` object.
 
-The CSV export includes notes from the currently active scene only. To export notes across all scenes, switch to each scene and export separately, or combine the CSV files manually.
+## Importing JSON
 
-## JSON export (builds)
-
-Notes from standalone builds are automatically saved as JSON files. See [Standalone builds](build-workflow.md) for details on the JSON format and import workflow.
+See [Standalone builds — Importing notes from builds](build-workflow.md#importing-notes-from-builds) for details on importing JSON files into the editor database.

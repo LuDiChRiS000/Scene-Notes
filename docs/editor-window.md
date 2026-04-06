@@ -1,95 +1,106 @@
 # Scene Notes Manager
 
-The Scene Notes Manager is an editor window that gives you full control over all notes in your scene. Open it from the Unity menu: Window > Scene Notes > Scene Notes Manager.
+The Scene Notes Manager is an editor window for browsing, filtering, and managing all notes in your scene.
 
-<!-- ![Scene Notes Manager window](images/manager-window.png) -->
+Open it from: Tools → Scene Notes → Scene Notes Manager, or press Ctrl+Shift+N (Cmd+Shift+N on Mac).
 
-## Quick action buttons
+![Scene Notes Manager window](images/SceneNotes-Manager.png)
 
-The top of the window contains action buttons for managing notes in bulk:
+## Toolbar
+
+The toolbar at the top of the window provides quick actions:
 
 ### Regenerate all
 
-Destroys all existing note objects in the scene and rebuilds them from the database. Use this if note objects have been accidentally deleted or moved, or after importing notes from a build.
-
-This does not create or delete any data — it only rebuilds the visual objects from the stored note data.
+Destroys all existing note objects in the scene and rebuilds them from the database as proper edit-mode prefab instances. Use this if note objects have been accidentally deleted, moved, or lost their visual properties. This does not create or delete any data — it only rebuilds the visual objects.
 
 ### Hide all
 
-Removes all note objects from the scene without affecting the database. The notes still exist in the ScriptableObject and can be brought back at any time with Regenerate All.
-
-Useful when notes are cluttering the Scene view during level design work and you want a clean view temporarily.
+Removes all note objects from the scene without affecting the database. Notes still exist in the ScriptableObject and can be brought back with Regenerate All. Useful when notes clutter the Scene view during level design.
 
 ### Delete all
 
-Permanently removes all notes for the current scene from the database and destroys their scene objects. This action cannot be undone — a confirmation dialog appears before proceeding.
+Permanently removes all notes for the current scene from the database and destroys their scene objects. A confirmation dialog appears showing the count — this action cannot be undone (though it supports Undo in the editor).
+
+### Resolve / unresolve selected
+
+When one or more notes are selected, a green Resolve Selected button appears. Click to mark all selected notes as resolved (or unresolve them if they are already resolved). The button label changes based on the current state of the selection.
+
+### Delete selected
+
+When one or more notes are selected, a red Delete Selected button appears with the count. Click to permanently delete all selected notes after a confirmation dialog.
 
 ### Export CSV
 
-Exports all notes in the current scene to a CSV file. See [Exporting notes](exporting.md) for details on the export format and configuration.
+Exports all notes in the current scene to a CSV file. The export respects the current type filters — if you have hidden certain types, only visible types are exported. See [Exporting notes](exporting.md).
 
 ### Import from build
 
-Opens a file picker to select a JSON file from a standalone build. See [Standalone builds](build-workflow.md) for the full QA workflow.
+Opens a file picker to select a JSON file from a standalone build. Notes are imported and merged into the database with duplicate detection. See [Standalone builds](build-workflow.md).
+
+### Settings button
+
+The gear icon on the far right opens the SceneNotesSettings asset in a property editor window.
 
 ## Filter bar
 
-Below the action buttons, a row of filter pills lets you show or hide notes by type. Each pill displays the type name, colour, and the number of notes of that type in the current scene.
+Below the toolbar, coloured pill buttons let you filter notes by type. Each pill shows the type name and the count of notes of that type in the current scene.
 
-Click a pill to toggle that type's visibility. Active types are shown with full opacity, hidden types are dimmed.
+Click a pill to toggle that type's visibility. Active types show at full opacity, hidden types are dimmed. Filtering affects both the note list and the 3D note objects in the scene.
 
-A separate Resolved filter lets you choose between showing all notes, only unresolved notes, or only resolved notes.
-
-Filters affect both the note list in the manager window and the visibility of note objects in the scene.
+A separate Resolved pill toggles visibility of resolved notes.
 
 ## Note list
 
-The main area of the window is a scrollable list of all notes in the current scene (after filtering). Each row shows:
+The main area is a scrollable list of all notes in the current scene that match the current filters. Each row shows:
 
-- A colour dot indicating the note type
-- The description text (truncated if long)
-- The author name
-- The creation date and time
-- The world position coordinates
+- A coloured strip on the left edge indicating the note type
+- The description text (truncated to 55 characters with ellipsis)
+- The author name, date, and world position coordinates
+- A checkmark badge for resolved notes
+- A visual strikethrough on resolved note descriptions
 
-### Click to navigate
+### Clicking notes
 
-Click any note in the list to fly the Scene view camera to that note's world position. The selected note is highlighted in the list and its scene object is also highlighted with a selection outline.
+Plain click on a note selects it and flies the Scene view camera to its world position. The camera zooms to 2 units away from the note.
 
-This is the fastest way to find a specific issue — scan the list, click the note, and you are looking at exactly where the problem is.
+Ctrl+click (Cmd+click on Mac) toggles individual notes in and out of the selection without deselecting others. This lets you build up a multi-selection.
+
+Shift+click selects a range from the last clicked note to the current one, including all notes in between.
+
+If Select Note in Scene is enabled in settings, clicking a note also selects its GameObject in the Hierarchy and Scene view.
+
+Click empty space below the note list to deselect all notes.
 
 ### Right-click context menu
 
 Right-click any note to access:
 
-- Resolve / Unresolve — toggle the resolved status
-- Delete — remove this single note (with confirmation)
-- Copy position — copy the world position coordinates to clipboard
-- Select in scene — select the note's GameObject in the hierarchy
+When a single note is right-clicked:
 
-### Resolved notes
+- Mark as Resolved / Mark as Unresolved — toggles the resolved state
+- Fly to Note — moves the Scene view camera to this note
+- Copy Position — copies the world position as a `new Vector3(x, y, z)` string to the clipboard, ready to paste into code
+- Delete — removes this note after confirmation
 
-Resolved notes appear with a strikethrough on the description and reduced opacity. They remain in the list and database until explicitly deleted, giving you a record of issues that have been addressed.
+When right-clicking a note that is part of a multi-selection:
 
-## Sorting
+- Mark N Selected as Resolved
+- Mark N Selected as Unresolved
+- Delete N Selected Notes
+- Plus the individual note actions below the separator
 
-Click the column headers in the note list to sort by different fields:
+## Bottom bar
 
-- Sort by type — groups notes by category
-- Sort by date — newest or oldest first
-- Sort by author — groups notes by team member
-- Sort by resolved — unresolved notes first
+The bottom of the window shows:
 
-## Keyboard shortcuts
+- Total note count and resolved count for the current scene
+- The current hotkey binding (from settings)
 
-The manager window supports these keyboard shortcuts when focused:
+## Notes are scene-specific
 
-- Delete key — delete the selected note (with confirmation)
-- R — toggle resolved status on the selected note
-- F — fly to the selected note in the Scene view
+The Manager only shows notes for the currently active scene. Switch scenes in Unity and the list updates automatically. Notes for other scenes remain in the database — they are just not displayed until that scene is active.
 
-## Scene view integration
+## Undo support
 
-When the Scene Notes Manager is open, note gizmos appear in the Scene view as small coloured icons at each note position. These are visible even when zoomed out or when note GameObjects are hidden.
-
-Hovering over a gizmo in the Scene view shows a tooltip with the note description. Gizmos fade with distance based on the Gizmo Max Distance setting.
+Delete, resolve, and unresolve operations support Unity's Undo system. Press Ctrl+Z (Cmd+Z on Mac) after a delete or resolve operation to reverse it.

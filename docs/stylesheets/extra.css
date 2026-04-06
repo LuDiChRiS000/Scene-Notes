@@ -1,0 +1,16 @@
+.image-card {
+  width: 320px;
+  height: 200px;
+  object-fit: cover;
+
+  border-radius: 14px;
+  overflow: hidden;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.image-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.25);
+}

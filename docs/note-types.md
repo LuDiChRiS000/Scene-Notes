@@ -8,13 +8,14 @@ Scene Notes ships with five default note types:
 
 | Type | Colour | Use case |
 |------|--------|----------|
-| Critical | Red | Game-breaking bugs that prevent progress |
-| Bug | Orange | Standard bugs and issues |
-| Todo | Yellow | Tasks, reminders, and things to revisit |
-| Visual | Green | Art, lighting, and visual polish notes |
-| Idea | Blue | Suggestions, improvements, and new ideas |
+| Critical | <span style="color:#E24B4A;">Red</span> | Game-breaking bugs that prevent progress |
+| Bug | <span style="color:#EF9F27;">Orange</span> | Standard bugs and issues |
+| Todo | <span style="color:#F5D63D;">Yellow</span> | Tasks, reminders, and things to revisit |
+| Visual | <span style="color:#639922;">Green</span> | Art, lighting, and visual polish notes |
+| Idea | <span style="color:#378ADD;">Blue</span> | Suggestions, improvements, and new ideas |
 
-These defaults cover the most common use cases, but you can modify them or add your own.
+!!! info
+    These defaults cover the most common use cases, but you can modify them or add your own.
 
 ## Creating custom note types
 
@@ -50,8 +51,12 @@ In the Scene Notes Manager window, each note displays its type colour as a dot n
 
 On the 3D note object in the scene, the type colour appears as a header strip across the top of the sticky note, making it easy to identify note categories at a glance from the Scene view.
 
+![Scene Notes Manager](images/SceneNotes-Manager.png){ .image-card }
+
 ## Resolved status
 
 In addition to types, every note has a Resolved toggle. Marking a note as resolved keeps it in the database but visually dims it in both the scene and the manager window. Use this to track progress without deleting notes.
 
 Resolved notes can be filtered in the Scene Notes Manager. You can show all notes, show only unresolved notes, or show only resolved notes.
+
+![Scene Notes resolved Note](images/SceneNotes-ResolvedNote.png){ .image-card }

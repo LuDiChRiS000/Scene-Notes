@@ -1,44 +1,40 @@
 # Standalone builds
 
-Scene Notes works in standalone builds, not just in the Unity Editor. This means QA testers, playtesters, and team members can drop contextual notes while playing a built version of your game — no Unity installation required.
+Scene Notes works in standalone builds, not just the Unity Editor. QA testers, playtesters, and team members can drop contextual notes while playing a built version of your game — no Unity installation required.
 
 ## How it works
 
-1. You include the Scene Notes system in your build
+1. You include the SceneNotesCanvas prefab in your build
 2. A tester plays the build and presses the hotkey to create notes
-3. Notes are saved to a JSON file on the tester's machine
-4. The tester sends you the JSON file (or it syncs via a shared folder)
-5. You import the file in the Unity Editor
-6. Notes appear in the correct scene at the correct positions
-
-This creates a complete QA feedback loop where bug reports include the exact world position of the issue, eliminating the guesswork of "it's somewhere near the bridge" or blurry screenshots.
+3. Notes are stored in memory during the session
+4. When the application quits, notes are saved to a JSON file automatically
+5. The tester sends the JSON file to the development team
+6. You import it in the Unity Editor — notes appear at the correct positions
 
 ## Setting up builds
 
 ### Including Scene Notes in your build
 
-The Scene Notes system needs to be present in every scene where you want testers to create notes. The simplest approach:
+The SceneNotesCanvas prefab must be present in your scene. It contains both the SceneNotesController (which manages note data and persistence) and the SceneNoteCreator (which handles the hotkey and creation UI).
 
-1. Add the SceneNotesController prefab to your first scene
-2. The controller uses DontDestroyOnLoad to persist across scene changes
-3. Make sure the Settings and Database assets are referenced by the controller
+The controller uses `DontDestroyOnLoad` so it persists across scene changes — you only need to place it in your first loaded scene.
 
-Alternatively, add the SceneNotesController to each scene individually if you only want note-taking enabled in specific scenes.
+Make sure the SceneNotesSettings asset is assigned on the SceneNotesController component. The settings and database references are serialised on the prefab, so they are included in the build automatically.
 
 ### Build-specific behaviour
 
-In standalone builds, Scene Notes automatically adapts its behaviour:
+In standalone builds, Scene Notes adapts automatically:
 
 - Notes are saved to JSON at `Application.persistentDataPath` instead of modifying ScriptableObjects (which is editor-only)
 - The file name format is `SceneNotes_[SceneName]_[Timestamp].json`
-- Notes auto-save when the application quits or when the scene changes
-- The note creation UI uses a runtime Canvas overlay
+- Notes auto-save when the application quits via `OnApplicationQuit`
+- The note creation UI uses the same runtime Canvas overlay as in the editor
 
-### Testing your build setup
+### Testing your build
 
 1. Build your project normally
 2. Run the build
-3. Press the hotkey — the game should freeze and the note creation panel should appear
+3. Press the hotkey (default F8) — the game should freeze and the creation panel should appear
 4. Create a test note and confirm
 5. Quit the application
 6. Check `Application.persistentDataPath` for the JSON file
@@ -53,65 +49,59 @@ In standalone builds, Scene Notes automatically adapts its behaviour:
 ## Importing notes from builds
 
 1. Open the Scene Notes Manager window in the Unity Editor
-2. Click the Import from Build button
-3. Select the JSON file from the file picker
-4. Notes are added to the database for their respective scenes
-5. Click Regenerate All to see the imported notes in the scene
+2. Click Import from Build in the toolbar
+3. A file picker opens — navigate to the JSON file and select it
+4. Notes are merged into the database with duplicate detection (importing the same file twice is safe — existing IDs are skipped)
+5. The manager regenerates note objects automatically
 
-### Duplicate handling
+If the JSON file contains notes from multiple scenes, they are all added to the database. Switch to each scene and regenerate to see its notes.
 
-If you import the same JSON file twice, Scene Notes checks note IDs to avoid creating duplicates. Only new notes are added to the database.
+The import path defaults to `Application.persistentDataPath`. You can set a custom path in the Build Import Path field in settings if your testers save files to a shared network folder.
 
-### Multi-scene imports
+## JSON file format
 
-A single JSON file may contain notes from multiple scenes (if the tester played through several scenes in one session). On import, notes are automatically sorted into the correct scene database. You will see notes from the current scene immediately. Switch to other scenes and regenerate to see their notes.
+The export uses Unity's `JsonUtility` with a wrapper object:
+
+```json
+{
+  "notes": [
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "description": "Player falls through floor here",
+      "noteTypeName": "Critical",
+      "worldPosition": { "x": -12.4, "y": 0.0, "z": 33.7 },
+      "sceneName": "Level_01",
+      "authorName": "QA_Tester_1",
+      "dateTime": "2026-03-29T14:14:00.0000000Z",
+      "isResolved": false
+    }
+  ]
+}
+```
 
 ## QA team workflow
 
-Here is a recommended workflow for teams with dedicated QA testers:
-
 ### Setup (one time)
 
-1. Configure Scene Notes settings for your project
-2. Set the hotkey to something that does not conflict with game controls
-3. Build the project and distribute to your QA team
-4. Tell testers the hotkey and ask them to set their author name in the in-game settings (if exposed) or pre-configure it in the build
+1. Run the setup wizard (Tools → Scene Notes → 1. Create Assets, then 2. Create Prefabs)
+2. Place the SceneNotesCanvas prefab in your first scene
+3. Configure the hotkey and spawn mode
+4. Build and distribute to your QA team
+5. Tell testers the hotkey and ask them to set author names if the settings allow it
 
 ### Each testing session
 
 1. Tester plays the build normally
-2. When they find an issue, they press the hotkey
-3. They type a description and select a note type
-4. They continue playing and repeat for each issue
-5. When done, they quit the application
-6. They send the JSON file to the development team (via email, Slack, shared drive, etc.)
+2. Presses the hotkey when they find an issue
+3. Types a description, selects a type, confirms
+4. Continues playing — repeats for each issue
+5. Quits the application — JSON file saves automatically
 
 ### Processing feedback
 
-1. Developer opens the project in Unity
-2. Imports the JSON file via Scene Notes Manager
-3. Opens each scene that has imported notes
-4. Clicks through notes in the manager to review each issue at its exact location
+1. Developer opens Unity and the Scene Notes Manager
+2. Clicks Import from Build, selects the JSON file
+3. Notes appear in the correct scenes at the correct positions
+4. Clicks through notes to review each issue at its exact location
 5. Fixes issues and marks notes as resolved
-6. Exports a CSV for the project tracker if needed
-
-## JSON file format
-
-The JSON export uses a simple array format:
-
-```json
-[
-  {
-    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-    "description": "Player falls through floor here",
-    "noteTypeName": "Critical",
-    "worldPosition": { "x": -12.4, "y": 0.0, "z": 33.7 },
-    "sceneName": "Level_01",
-    "authorName": "QA_Tester_1",
-    "dateTime": "2026-03-29T14:14:00",
-    "isResolved": false
-  }
-]
-```
-
-This format is human-readable and can be parsed by external tools if needed.
+6. Exports CSV for the project tracker if needed
