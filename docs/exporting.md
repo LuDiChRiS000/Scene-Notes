@@ -2,6 +2,8 @@
 
 Scene Notes supports two export formats: CSV for project management tools and JSON for standalone build workflows.
 
+![Scene Notes Exported as CSV](images/SceneNotes-ExportCSV.png){ .image-card }
+
 ## CSV export
 
 ### Exporting from the editor

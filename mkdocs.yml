@@ -40,6 +40,15 @@ nav:
 plugins:
   - search
   - glightbox
+  - to-pdf:
+      author: Chris Burns
+      copyright: Copyright Chris Burns
+      cover: true
+      cover_title: Scene Notes
+      cover_subtitle: User Guide
+      output_path: pdf/SceneNotes_UserGuide.pdf
+      toc_title: Table of Contents
+      enabled_if_env: ENABLE_PDF
 
 markdown_extensions:
   - admonition
