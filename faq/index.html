@@ -535,6 +535,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#can-i-hide-notes-while-playtesting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Can I hide notes while playtesting?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#does-scene-notes-affect-game-performance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -817,6 +828,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#can-i-hide-notes-while-playtesting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Can I hide notes while playtesting?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#does-scene-notes-affect-game-performance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1044,8 +1066,10 @@
 
 <h1 id="faq-and-troubleshooting">FAQ and troubleshooting<a class="headerlink" href="#faq-and-troubleshooting" title="Permanent link">¶</a></h1>
 <h2 id="frequently-asked-questions">Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Permanent link">¶</a></h2>
+<h3 id="can-i-hide-notes-while-playtesting">Can I hide notes while playtesting?<a class="headerlink" href="#can-i-hide-notes-while-playtesting" title="Permanent link">¶</a></h3>
+<p>Yes. Press <strong>Shift+F8</strong> during play mode (or in a standalone build) to toggle the visibility of all spawned notes. This lets you play unobstructed when notes clutter the view, then bring them back to review or add to them. It is a display toggle only — your note data is untouched.</p>
 <h3 id="does-scene-notes-affect-game-performance">Does Scene Notes affect game performance?<a class="headerlink" href="#does-scene-notes-affect-game-performance" title="Permanent link">¶</a></h3>
-<p>No. During normal gameplay, the only runtime cost is a single <code>Input.GetKeyDown</code> check per frame to detect the hotkey. Note objects are standard GameObjects with a lightweight billboard script. The controller also checks for render-on-top setting changes once per frame, which is negligible.</p>
+<p>No. During normal gameplay, the only runtime cost is a couple of <code>Input.GetKeyDown</code> checks per frame — one to detect the note-creation hotkey and one for the Shift+F8 show/hide toggle. Note objects are standard GameObjects with a lightweight billboard script. The controller also checks for render-on-top setting changes once per frame, which is negligible.</p>
 <h3 id="can-i-use-scene-notes-in-a-shipped-game">Can I use Scene Notes in a shipped game?<a class="headerlink" href="#can-i-use-scene-notes-in-a-shipped-game" title="Permanent link">¶</a></h3>
 <p>Scene Notes is designed as a development and QA tool. While it works in builds, you should remove or disable the SceneNotesCanvas GameObject before your final release build to prevent players from accessing the note creation UI.</p>
 <h3 id="do-notes-survive-scene-changes">Do notes survive scene changes?<a class="headerlink" href="#do-notes-survive-scene-changes" title="Permanent link">¶</a></h3>
