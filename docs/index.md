@@ -13,6 +13,7 @@ When play mode ends, your notes are waiting in the scene. Click any note in the 
 ## Key features
 
 - Create notes during play mode with a single hotkey press
+- Show or hide all notes at runtime with Shift+F8
 - Notes persist after play mode ends — stored in a ScriptableObject database
 - Three placement modes: player position, cursor raycast, and screen centre
 - Works in both 2D and 3D projects

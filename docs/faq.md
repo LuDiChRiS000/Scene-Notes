@@ -2,9 +2,13 @@
 
 ## Frequently asked questions
 
+### Can I hide notes while playtesting?
+
+Yes. Press **Shift+F8** during play mode (or in a standalone build) to toggle the visibility of all spawned notes. This lets you play unobstructed when notes clutter the view, then bring them back to review or add to them. It is a display toggle only — your note data is untouched.
+
 ### Does Scene Notes affect game performance?
 
-No. During normal gameplay, the only runtime cost is a single `Input.GetKeyDown` check per frame to detect the hotkey. Note objects are standard GameObjects with a lightweight billboard script. The controller also checks for render-on-top setting changes once per frame, which is negligible.
+No. During normal gameplay, the only runtime cost is a couple of `Input.GetKeyDown` checks per frame — one to detect the note-creation hotkey and one for the Shift+F8 show/hide toggle. Note objects are standard GameObjects with a lightweight billboard script. The controller also checks for render-on-top setting changes once per frame, which is negligible.
 
 ### Can I use Scene Notes in a shipped game?
 

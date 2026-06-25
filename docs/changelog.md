@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 1.0.1
+
+### Note creation
+
+- Added a **Shift+F8** runtime toggle to show or hide all spawned notes during play mode and in standalone builds. Visibility is display-only and does not affect note data.
+
 ## Version 1.0.0 (initial release)
 
 ### Setup

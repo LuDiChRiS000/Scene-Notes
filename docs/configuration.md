@@ -14,6 +14,10 @@ The key that triggers note creation during play mode. Default is F8 (KeyCode 289
 
 The name attached to each note you create. If left empty, your operating system username is used automatically. For team workflows, each team member should set their own author name so notes can be attributed correctly.
 
+### Show/hide notes at runtime
+
+Press **Shift+F8** during play mode (or in a standalone build) to toggle the visibility of all spawned notes. This is handy when notes obscure the action while you are playtesting — hide them to play unobstructed, then bring them back when you want to review or add to them. Visibility is a display-only toggle; it does not affect the note data or the database.
+
 ## Placement
 
 ### Spawn mode

@@ -89,6 +89,9 @@ If the Player Reference is left empty, Scene Notes falls back in this order:
 
 The note spawns as a colour-coded sticky note at your position. The game resumes automatically. Your cursor state (locked/visible) is restored to what it was before the note panel opened.
 
+!!! tip
+    Press **Shift+F8** during play mode to show or hide all notes. Use this to clear the view when notes get in the way, then toggle them back on to review them.
+
 ![Note creation panel](images/SceneNotes-CreateNote.png)
 
 ## Viewing notes after playtesting
